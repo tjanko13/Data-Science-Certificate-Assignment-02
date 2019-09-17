@@ -2,7 +2,9 @@
 title: "Assignment 02"
 author: "Scott Stoltzman"
 date: "5/12/2019"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ### Answer the problems below in the spaces between `<ANSWER BELOW>` and `<ANSWER ABOVE>`
@@ -11,9 +13,9 @@ output: html_document
 
 1.  Why does this code not work?
 
-    ```{r, error = TRUE}
+    ```{r, error = FALSE}
     my_variable <- 10
-    my_varıable
+    my_variable
     ```
     
     Look carefully! (This may seem like an exercise in pointlessness, but
@@ -22,7 +24,10 @@ output: html_document
     
     
     `<ANSWER BELOW>`
-    PUT YOUR ANSWER HERE
+    The call of my_varıable contains a dotless i character, in Unicode:
+    (U+0131	ı	305	&inodot;	Latin Small Letter dotless I	0241)
+    versus the dotted i (U+0069	i	105	Latin Small Letter I	0074).
+    R returns an error since the dotless i variable was never instanciated.
     `<ANSWER ABOVE>`
     
     
@@ -31,11 +36,11 @@ output: html_document
 
 
     `<ANSWER BELOW>`
-    PUT YOUR ANSWER HERE
+    R opens the Keyboard Shortcuts Help (quick reference). From menu: Tools >  Keyboard Shortcuts Help
     `<ANSWER ABOVE>`
 
 
 
-#### Bonus - what happens if you hit "knit"?
+#### Bonus - what happens if you hit "knit"? Knit renders the file and previews the output of the Rmd file in a number of output formats (i.e., PDF, MS Word, HTML). Knit can also be executed via shortcut -- Shift + Command + K
 
 #### Remember to commit your changes and push to your repository
