@@ -2,10 +2,16 @@
 title: "Assignment 02"
 author: "Scott Stoltzman"
 date: "5/12/2019"
-output:
-  pdf_document: default
-  html_document: default
+output: html_document
 ---
+
+Install package: 'nycflights123'
+
+```{r}
+library('nycflights13')
+library('tidyverse')
+```
+
 
 ### Answer the problems below in the spaces between `<ANSWER BELOW>` and `<ANSWER ABOVE>`
 
@@ -13,9 +19,9 @@ output:
 
 1.  Why does this code not work?
 
-    ```{r, error = FALSE}
+    ```{r, error = TRUE}
     my_variable <- 10
-    my_variable
+    my_varıable
     ```
     
     Look carefully! (This may seem like an exercise in pointlessness, but
@@ -41,6 +47,68 @@ output:
 
 
 
-#### Bonus - what happens if you hit "knit"? Knit renders the file and previews the output of the Rmd file in a number of output formats (i.e., PDF, MS Word, HTML). Knit can also be executed via shortcut -- Shift + Command + K
+Find all flights that  
 
-#### Remember to commit your changes and push to your repository
+  1. Had an arrival delay of two or more hours  
+  2. Flew to Houston (IAH or HOU)
+  3. Were operated by United, American, or Delta
+  4. Departed in summer (July, August, and September)
+  5. Arrived more than two hours late, but didn’t leave late
+  6. Were delayed by at least an hour, but made up over 30 minutes in flight
+  7. Departed between midnight and 6am (inclusive)
+
+```{r}
+?flights
+dat <- flights
+filter(dat, arr_delay >= 120)
+filter(dat, dest == "IAH" | dest == "HOU")
+filter(dat, carrier == "UA" | carrier == "AA" | carrier == "DL")
+filter(dat, month == 7 | month == 8 | month == 9)
+filter(dat, ((arr_delay > 120) & (dep_delay <= 0)))
+filter(dat, (dep_delay >= 60), (dep_delay > arr_delay + 30))
+View(filter(dat, between(dep_time, 0000, 0600)))
+
+```
+
+
+Another useful dplyr filtering helper is between(). What does it do? Can you use it to simplify the code needed to answer the previous challenges?
+```{r}
+filter(dat, between(dep_time, 0000, 0600))
+```
+
+
+How many flights have a missing dep_time? What other variables are missing? What might these rows represent?
+```{r}
+sum(is.na(dat$dep_time)) # 8255 missing
+sum(is.na(dat$year)) # 0 missing
+sum(is.na(dat$month)) # 0 missing
+sum(is.na(dat$day)) # 0 missing
+sum(is.na(dat$arr_time)) #8713 missing
+sum(is.na(dat$sched_dep_time)) # 0 missing
+sum(is.na(dat$sched_arr_time)) # 0 missing
+sum(is.na(dat$dep_delay)) #8255 missing
+sum(is.na(dat$arr_delay)) # 9430 missing
+sum(is.na(dat$carrier)) # 0 missing
+sum(is.na(dat$flight)) # 0 missing
+sum(is.na(dat$tailnum)) # 2512 missing
+sum(is.na(dat$origin)) # 0 missing
+sum(is.na(dat$dest)) # 0 missing
+sum(is.na(dat$air_time)) #9430 missing
+sum(is.na(dat$distance)) # 0 missing
+sum(is.na(dat$hour)) # 0 missing
+sum(is.na(dat$minute)) # 0 missing
+sum(is.na(dat$time_hour)) # 0 missing
+sum(is.na(dat$dep_time)) # 0 missing
+## The flights with missing values never actually launched, so they probably were cancelled...
+colSums(is.na(dat))
+```
+
+Why is NA ^ 0 not missing? Why is NA | TRUE not missing? Why is FALSE & NA not missing? Can you figure out the general rule? (NA * 0 is a tricky counterexample!)
+```{r}
+NA ^ 0 # Results in 1. So, NA holds TRUE and not missing. 
+NA | TRUE # Results in TRUE since (in the OR logical expression) one of the two is TRUE , and it's not missing.
+FALSE & NA # The & returns TRUE if both are TRUE, so this results in FALSE. 
+## If it can pass the logical expression, then it will return NA and not missing.
+NA * 0 # Results in NA
+```
+
